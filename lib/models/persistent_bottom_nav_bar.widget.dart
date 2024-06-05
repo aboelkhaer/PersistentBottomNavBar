@@ -1,5 +1,8 @@
 part of persistent_bottom_nav_bar;
 
+typedef AnimationCompleteCallback = void Function(
+    {required bool firstParam, required bool secondParam});
+
 class PersistentBottomNavBar extends StatelessWidget {
   const PersistentBottomNavBar({
     final Key? key,
@@ -23,7 +26,7 @@ class PersistentBottomNavBar extends StatelessWidget {
   final Widget? customNavBarWidget;
   final bool? confineToSafeArea;
   final bool? hideNavigationBar;
-  final Function(bool, bool)? onAnimationComplete;
+  final AnimationCompleteCallback? onAnimationComplete;
   final bool? isCustomWidget;
 
   Padding _navBarWidget() => Padding(
@@ -180,8 +183,14 @@ class PersistentBottomNavBar extends StatelessWidget {
       : OffsetAnimation(
           hideNavigationBar: hideNavigationBar,
           navBarHeight: navBarEssentials!.navBarHeight,
-          onAnimationComplete: (final isAnimating, final isComplete) {
-            onAnimationComplete!(isAnimating, isComplete);
+          onAnimationComplete: ({
+            required final firstParam,
+            required final secondParam,
+          }) {
+            onAnimationComplete!(
+              firstParam: firstParam,
+              secondParam: secondParam,
+            );
           },
           child: _navBarWidget(),
         );
@@ -206,24 +215,22 @@ class PersistentBottomNavBar extends StatelessWidget {
           final NavBarEssentials? navBarEssentials,
           final bool? confineToSafeArea,
           final ItemAnimationProperties? itemAnimationProperties,
-          final Function? onAnimationComplete,
+          final AnimationCompleteCallback? onAnimationComplete,
           final bool? hideNavigationBar,
           final bool? isCustomWidget,
           final EdgeInsets? padding}) =>
       PersistentBottomNavBar(
-          confineToSafeArea: confineToSafeArea ?? this.confineToSafeArea,
-          margin: margin ?? this.margin,
-          neumorphicProperties:
-              neumorphicProperties ?? this.neumorphicProperties,
-          navBarStyle: navBarStyle ?? this.navBarStyle,
-          hideNavigationBar: hideNavigationBar ?? this.hideNavigationBar,
-          customNavBarWidget: customNavBarWidget ?? this.customNavBarWidget,
-          onAnimationComplete:
-              onAnimationComplete as dynamic Function(bool, bool)? ??
-                  this.onAnimationComplete,
-          navBarEssentials: navBarEssentials ?? this.navBarEssentials,
-          isCustomWidget: isCustomWidget ?? this.isCustomWidget,
-          navBarDecoration: navBarDecoration ?? this.navBarDecoration);
+        confineToSafeArea: confineToSafeArea ?? this.confineToSafeArea,
+        margin: margin ?? this.margin,
+        neumorphicProperties: neumorphicProperties ?? this.neumorphicProperties,
+        navBarStyle: navBarStyle ?? this.navBarStyle,
+        hideNavigationBar: hideNavigationBar ?? this.hideNavigationBar,
+        customNavBarWidget: customNavBarWidget ?? this.customNavBarWidget,
+        onAnimationComplete: onAnimationComplete ?? this.onAnimationComplete,
+        navBarEssentials: navBarEssentials ?? this.navBarEssentials,
+        isCustomWidget: isCustomWidget ?? this.isCustomWidget,
+        navBarDecoration: navBarDecoration ?? this.navBarDecoration,
+      );
 
   bool opaque(final int? index) => navBarEssentials!.items == null
       ? true
